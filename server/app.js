@@ -23,31 +23,31 @@ app.get("/", function(req, res) {
         res.status(200).send("enter movie ID or title parameter after the / in the url");
     }else{
 
-    axios({
-        method:"get",
-        // When making calls to the OMDB API make sure to append the '&apikey=8730e0e' parameter
-        url: `http://www.omdbapi.com${req.url}&apikey=${process.env.REACT_APP_API_KEY}`,
-    })
-        .then((result) => {
-            // respond with data from cache if the req.url already exists as a key within movieObj
-            
-            if(movieObj.hasOwnProperty(req.url)){
-                console.log("sending data from cache", movieObj[req.url])
-                console.log("movieObj in if", movieObj);
-                res.send(movieObj[req.url]);
+        axios({
+            method:"get",
+            // When making calls to the OMDB API make sure to append the '&apikey=8730e0e' parameter
+            url: `http://www.omdbapi.com${req.url}&apikey=${process.env.REACT_APP_API_KEY}`,
+        })
+            .then((result) => {
+                // respond with data from cache if the req.url already exists as a key within movieObj
+                
+                if(movieObj.hasOwnProperty(req.url)){
+                    //console.log("sending data from cache", movieObj[req.url])
+                    //console.log("movieObj in if", movieObj);
+                    res.send(movieObj[req.url]);
 
-            //make API call if it is a new request
-            }else{
-            movieObj[req.url] = result.data;
-            console.log("sending api call")
-            console.log("movieObj in else", movieObj);
-            res.send(result.data);
-            }
-        })
-        .catch((error) => {
-            console.error(error);
-            res.send('An error occured.');
-        })
+                //make API call if it is a new request
+                }else{
+                    movieObj[req.url] = result.data;
+                    //console.log("sending api call")
+                    //console.log("movieObj in else", movieObj);
+                    res.send(result.data);
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+                res.send('An error occured.');
+            })
     }
     
 });
