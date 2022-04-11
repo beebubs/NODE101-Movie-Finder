@@ -9,6 +9,7 @@ const app = express();
 // add your routes and middleware below
 app.use(morgan("dev"));
 
+//create cache to hold movie data info
 let movieObj = {};
 
 app.get("/", function(req, res) {
@@ -17,9 +18,8 @@ app.get("/", function(req, res) {
     if (req.url == "/"){
         res.status(200).send("enter movie ID or title parameter after the / in the url");
     } else if (movieObj.hasOwnProperty(req.url)){
-        console.log("sending data from cache", movieObj[req.url])
-        console.log("movieObj in if", movieObj);
         // respond with data from cache if the req.url already exists as a key within movieObj 
+        console.log("sending data from cache", movieObj[req.url])
         res.send(movieObj[req.url]);
     } else {
         axios({
@@ -31,7 +31,6 @@ app.get("/", function(req, res) {
                 //make API call if it is a new request
                 movieObj[req.url] = result.data;
                 console.log("sending api call")
-                console.log("movieObj in else", movieObj);
                 res.send(result.data);
             })
             .catch((error) => {
@@ -40,6 +39,10 @@ app.get("/", function(req, res) {
             })
     }
     
+});
+
+app.get('*', (req, res) => {
+    res.send('Not Found')
 });
 
 module.exports = app;
